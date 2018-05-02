@@ -5,8 +5,13 @@ var moment = require('moment');
 var _ = require('lodash');
 
 var app = express();  
-app.get('/', function (req, res) {  
-
+app.get('/:commodity/:state/:district/:market/:from/:to', function (req, res) {  
+console.log(req.params.commodity)
+console.log(req.params.state)
+console.log(req.params.district)
+console.log(req.params.market)
+console.log(req.params.from)
+console.log(req.params.to)
 
 //     var url = 'http://agmarknet.gov.in/SearchCmmMkt.aspx?Tx_Commodity=23&Tx_State=MH&Tx_District=1&Tx_Market=153&DateFrom=01-Mar-2018&DateTo=17-Apr-2018&Fr_Date=01-Mar-2018&To_Date=17-Apr-2018&Tx_Trend=0&Tx_CommodityHead=Onion&Tx_StateHead=Maharashtra&Tx_DistrictHead=Ahmednagar&Tx_MarketHead=Ahmednagar';
 // tabletojson.convertUrl(url, function(tablesAsJson) {
@@ -20,7 +25,7 @@ app.get('/', function (req, res) {
 // //   req.data = data.json()
  
 // }
-getjsondate().then(function(val){
+getjsondate(req.params.commodity,req.params.state,req.params.district,req.params.market,req.params.from,req.params.to).then(function(val){
  
   res.send(val)
 
@@ -39,7 +44,7 @@ server.timeout = 240000000;
  console.log("Example app listening at http://%s:%s", host, port)  
 }) 
 
-function getjsondate() {
+function getjsondate(commodity,state,district,market,from,to) {
 
 
   var enumerateDaysBetweenDates = function(startDate, endDate) {
@@ -54,7 +59,8 @@ function getjsondate() {
 
 var fromDate = moment();
 var toDate   = moment().add(6, 'days');
-var jsonArray = enumerateDaysBetweenDates(moment("01-Jan-2003"), moment("31-Jan-2003"));
+var jsonArray = enumerateDaysBetweenDates(moment(from), moment(to));
+// var jsonArray = enumerateDaysBetweenDates(moment("01-Jan-2003"), moment("31-Jan-2003"));
 // console.log(jsonArray);
 
 // var array = [ 1, 2, 3, 4 ,5 ];
@@ -70,7 +76,9 @@ var jsonArray = enumerateDaysBetweenDates(moment("01-Jan-2003"), moment("31-Jan-
 // jsonArray = [1,2];
 for (let index = 0; index < jsonArray.length; index++) {
   console.log("main")
-  var url = 'http://agmarknet.gov.in/SearchCmmMkt.aspx?Tx_Commodity=78&Tx_State=KK&Tx_District=1&Tx_Market=0&DateFrom='+jsonArray[index]+'&DateTo='+jsonArray[index]+'&Fr_Date='+jsonArray[index]+'&To_Date='+jsonArray[index]+'&Tx_Trend=1&Tx_CommodityHead=Onion&Tx_StateHead=Maharashtra&Tx_DistrictHead=Ahmednagar&Tx_MarketHead=Ahmednagar';
+  var url = 'http://agmarknet.gov.in/SearchCmmMkt.aspx?Tx_Commodity='+commodity+'&Tx_State='+state+'&Tx_District='+district+'&Tx_Market='+market+'&DateFrom='+jsonArray[index]+'&DateTo='+jsonArray[index]+'&Fr_Date='+jsonArray[index]+'&To_Date='+jsonArray[index]+'&Tx_Trend=1&Tx_CommodityHead=Onion&Tx_StateHead=Maharashtra&Tx_DistrictHead=Ahmednagar&Tx_MarketHead=Ahmednagar';
+  
+  // var url = 'http://agmarknet.gov.in/SearchCmmMkt.aspx?Tx_Commodity=78&Tx_State=KK&Tx_District=1&Tx_Market=0&DateFrom='+jsonArray[index]+'&DateTo='+jsonArray[index]+'&Fr_Date='+jsonArray[index]+'&To_Date='+jsonArray[index]+'&Tx_Trend=1&Tx_CommodityHead=Onion&Tx_StateHead=Maharashtra&Tx_DistrictHead=Ahmednagar&Tx_MarketHead=Ahmednagar';
    
   // console.log(jsonArray[index]);
   tabletojson.convertUrl(url, function(tablesAsJson) {
